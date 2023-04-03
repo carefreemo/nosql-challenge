@@ -1,219 +1,221 @@
 Before You Begin
-Create a new repository for this project called sqlalchemy-challenge. Do not add this assignment to an existing repository.
+Create a new repository for this project called nosql-challenge. Do not add this homework to an existing repository.
 
 Clone the new repository to your computer.
 
-Inside your local Git repository, create a directory for this Challenge. Use a folder name that corresponds to the Challenge, such as SurfsUp.
+Add your Jupyter notebook starter files and your Resources folder containing establishments.json to this folder.
 
-Add your Jupyter notebook and app.py to this folder. They’ll contain the main scripts to run for analysis. Also add the Resources folder, which contains the data files you will be using for this challenge.
-
-Push the changes to GitHub or GitLab.
+Push the changes to GitHub.
 
 Files
 Download the following files to help you get started:
 
-Module 10 Challenge filesLinks to an external site.
+Module 12 Challenge filesLinks to an external site.
 
 Instructions
-Congratulations! You've decided to treat yourself to a long holiday vacation in Honolulu, Hawaii. To help with your trip planning, you decide to do a climate analysis about the area. The following sections outline the steps that you need to take to accomplish this task.
+The UK Food Standards Agency evaluates various establishments across the United Kingdom, and gives them a food hygiene rating. You've been contracted by the editors of a food magazine, Eat Safe, Love, to evaluate some of the ratings data in order to help their journalists and food critics decide where to focus future articles.
 
-Part 1: Analyze and Explore the Climate Data
-In this section, you’ll use Python and SQLAlchemy to do a basic climate analysis and data exploration of your climate database. Specifically, you’ll use SQLAlchemy ORM queries, Pandas, and Matplotlib. To do so, complete the following steps:
+Part 1: Database and Jupyter Notebook Set Up
+Use NoSQL_setup_starter.ipynb for this section of the challenge.
 
-Note that you’ll use the provided files (climate_starter.ipynb and hawaii.sqlite) to complete your climate analysis and data exploration.
+Import the data provided in the establishments.json file from your Terminal. Name the database uk_food and the collection establishments. Copy the text you used to import your data from your Terminal to a markdown cell in your notebook.
 
-Use the SQLAlchemy create_engine() function to connect to your SQLite database.
+Within your notebook, import the libraries you need: PyMongo and Pretty Print (pprint).
 
-Use the SQLAlchemy automap_base() function to reflect your tables into classes, and then save references to the classes named station and measurement.
+Create an instance of the Mongo Client.
 
-Link Python to the database by creating a SQLAlchemy session.
+Confirm that you created the database and loaded the data properly:
 
-IMPORTANT
-Remember to close your session at the end of your notebook.
+List the databases you have in MongoDB. Confirm that uk_food is listed.
+List the collection(s) in the database to ensure that establishments is there.
+Find and display one document in the establishments collection using find_one and display with pprint.
+Assign the establishments collection to a variable to prepare the collection for use.
 
-Perform a precipitation analysis and then a station analysis by completing the steps in the following two subsections.
+Part 2: Update the Database
+Use NoSQL_setup_starter.ipynb for this section of the challenge.
 
-Precipitation Analysis
-Find the most recent date in the dataset.
+The magazine editors have some requested modifications for the database before you can perform any queries or analysis for them. Make the following changes to the establishments collection:
 
-Using that date, get the previous 12 months of precipitation data by querying the previous 12 months of data.
+An exciting new halal restaurant just opened in Greenwich, but hasn't been rated yet. The magazine has asked you to include it in your analysis. Add the following information to the database:
 
-HINT
-Select only the "date" and "prcp" values.
+{
+    "BusinessName":"Penang Flavours",
+    "BusinessType":"Restaurant/Cafe/Canteen",
+    "BusinessTypeID":"",
+    "AddressLine1":"Penang Flavours",
+    "AddressLine2":"146A Plumstead Rd",
+    "AddressLine3":"London",
+    "AddressLine4":"",
+    "PostCode":"SE18 7DY",
+    "Phone":"",
+    "LocalAuthorityCode":"511",
+    "LocalAuthorityName":"Greenwich",
+    "LocalAuthorityWebSite":"http://www.royalgreenwich.gov.uk",
+    "LocalAuthorityEmailAddress":"health@royalgreenwich.gov.uk",
+    "scores":{
+        "Hygiene":"",
+        "Structural":"",
+        "ConfidenceInManagement":""
+    },
+    "SchemeType":"FHRS",
+    "geocode":{
+        "longitude":"0.08384000",
+        "latitude":"51.49014200"
+    },
+    "RightToReply":"",
+    "Distance":4623.9723280747176,
+    "NewRatingPending":True
+}
+Find the BusinessTypeID for "Restaurant/Cafe/Canteen" and return only the BusinessTypeID and BusinessType fields.
 
-Load the query results into a Pandas DataFrame, and set the index to the "date" column.
+Update the new restaurant with the BusinessTypeID you found.
 
-Sort the DataFrame values by "date".
+The magazine is not interested in any establishments in Dover, so check how many documents contain the Dover Local Authority. Then, remove any establishments within the Dover Local Authority from the database, and check the number of documents to ensure they were deleted.
 
-Plot the results by using the DataFrame plot method, as the following image shows:
+Some of the number values are stored as strings, when they should be stored as numbers. Use update_many to convert latitude and longitude to decimal numbers.
 
-A screenshot depicts the plot.
+Part 3: Exploratory Analysis
+Eat Safe, Love has specific questions they want you to answer, which will help them find the locations they wish to visit and avoid.
 
-Use Pandas to print the summary statistics for the precipitation data.
+Use NoSQL_analysis_starter.ipynb for this section of the challenge.
 
-Station Analysis
-Design a query to calculate the total number of stations in the dataset.
+Some notes to be aware of while you are exploring the dataset:
 
-Design a query to find the most-active stations (that is, the stations that have the most rows). To do so, complete the following steps:
+RatingValue refers to the overall rating decided by the Food Authority and ranges from 1-5. The higher the value, the better the rating. Note: This field also includes non-numeric values such as 'Pass', where 'Pass' means that the establishment passed their inspection but isn't given a number rating.
 
-List the stations and observation counts in descending order.
+The scores for Hygiene, Structural, and ConfidenceInManagement work in reverse. This means, the higher the value, the worse the establishment is in these areas.
 
-HINT
-Answer the following question: which station id has the greatest number of observations?
-Design a query that calculates the lowest, highest, and average temperatures that filters on the most-active station id found in the previous query.
+Use the following questions to explore the database, and find the answers, so you can provide them to the magazine editors.
 
-HINT
-Design a query to get the previous 12 months of temperature observation (TOBS) data. To do so, complete the following steps:
+Unless otherwise stated, for each question:
 
-Filter by the station that has the greatest number of observations.
+Use count_documents to display the number of documents contained in the result.
 
-Query the previous 12 months of TOBS data for that station.
+Display the first document in the results using pprint.
 
-Plot the results as a histogram with bins=12, as the following image shows:
+Convert the result to a Pandas DataFrame, print the number of rows in the DataFrame, and display the first 10 rows.
 
-A screenshot depicts the histogram.
+Which establishments have a hygiene score equal to 20?
 
-Close your session.
+Which establishments in London have a RatingValue greater than or equal to 4?
 
-Part 2: Design Your Climate App
-Now that you’ve completed your initial analysis, you’ll design a Flask API based on the queries that you just developed. To do so, use Flask to create your routes as follows:
+Hint: The London Local Authority has a longer name than "London" so you will need to use $regex as part of your search.
 
-/
+What are the top 5 establishments with a RatingValue of '5', sorted by lowest hygiene score, nearest to the new restaurant added, "Penang Flavours"?
 
-Start at the homepage.
+Hint: You will need to compare the geocode to find the nearest locations. Search within 0.01 degree on either side of the latitude and longitude.
 
-List all the available routes.
+How many establishments in each Local Authority area have a hygiene score of 0? Sort the results from highest to lowest, and print out the top ten local authority areas.
 
-/api/v1.0/precipitation
+Hint: You will need to use the aggregation method to answer this.
 
-Convert the query results from your precipitation analysis (i.e. retrieve only the last 12 months of data) to a dictionary using date as the key and prcp as the value.
+The first 5 rows of your resulting DataFrame should look something like this:
 
-Return the JSON representation of your dictionary.
-
-/api/v1.0/stations
-
-Return a JSON list of stations from the dataset.
-/api/v1.0/tobs
-
-Query the dates and temperature observations of the most-active station for the previous year of data.
-
-Return a JSON list of temperature observations for the previous year.
-
-/api/v1.0/<start> and /api/v1.0/<start>/<end>
-
-Return a JSON list of the minimum temperature, the average temperature, and the maximum temperature for a specified start or start-end range.
-
-For a specified start, calculate TMIN, TAVG, and TMAX for all the dates greater than or equal to the start date.
-
-For a specified start date and end date, calculate TMIN, TAVG, and TMAX for the dates from the start date to the end date, inclusive.
-
-Hints
-Join the station and measurement tables for some of the queries.
-
-Use the Flask jsonify function to convert your API data to a valid JSON response object.
-
+_id	count
+0	Thanet	1130
+1	Greenwich	882
+2	Maidstone	713
+3	Newham	711
+4	Swale	686
 Requirements
-Jupyter Notebook Database Connection (10 points)
-To receive all points, you must
-Use the SQLAlchemy create_engine() function to connect to your SQLite database (1 point)
+Part 1: Database and Jupyter Notebook Set Up (15 points)
+To receive all points, your Jupyter notebook setup file must have all of the following:
+Include the mongoimport command text you used to import establishments.json in a markdown cell at the beginning of your Jupyter notebook file (3 points)
 
-Use the SQLAlchemy automap_base() function to reflect your tables into classes (3 points)
+The mongoimport command text correctly drops any existing establishments collection before importing establishments.json into MongoDB (2 points)
 
-Save references to the classes named station and measurement (4 points)
+The database is named uk_food and the collection is named establishments (2 points)
 
-Link Python to the database by creating a SQLAlchemy session (1 point)
+Correctly imports PyMongo and Pretty Print (2 points)
 
-Close your session at the end of your notebook (1 point)
+An instance of the Mongo Client is created (1 point)
 
-Precipitation Analysis (16 points)
-To receive all points, you must
-Create a query that finds the most recent date in the dataset (8/23/2017) (2 points)
+Lists the databases you have in Mongo, which includes uk_food (1 point)
 
-Create a query that collects only the date and precipitation for the last year of data without passing the date as a variable (4 points)
+Lists the collection(s) in the uk_food database, which includes establishments in the output (1 point)
 
-Save the query results to a Pandas DataFrame to create date and precipitation columns (2 points)
+Uses find_one() and pprint to display one document in the establishments collection (2 points)
 
-Sort the DataFrame by date (2 points)
+The establishments collection is assigned to a variable (1 point)
 
-Plot the results by using the DataFrame plot method with date as the x and precipitation as the y variables (4 points)
+Part 2: Update the Database (20 points)
+To receive all points, your Jupyter notebook setup file must have all of the following:
+The supplied data for the "Penang Flavours" restaurant is correctly inserted into the establishments collection (3 points)
 
-Use Pandas to print the summary statistics for the precipitation data (2 points)
+A query is performed to find the BusinessTypeID for "Restaurant/Cafe/Canteen" and returns only the BusinessTypeID and BusinessType fields (3 points)
 
-Station Analysis (16 points)
-To receive all points, you must
-Design a query that correctly finds the number of stations in the dataset (9) (2 points)
+The "Penang Flavours" document is updated with the correct value for BusinessTypeID (3 points)
 
-Design a query that correctly lists the stations and observation counts in descending order and finds the most active station (USC00519281) (2 points)
+A query is correctly performed to delete all the documents in the collection where "Dover Local Authority" is the value for LocalAuthorityName (3 points)
 
-Design a query that correctly finds the min, max, and average temperatures for the most active station (USC00519281) (3 points)
+A count_documents() check is performed before and after the removal of the Dover documents to ensure the documents were removed (4 points)
 
-Design a query to get the previous 12 months of temperature observation (TOBS) data that filters by the station that has the greatest number of observations (3 points)
+An update_many() query is performed to convert the latitude and longitude fields from strings to decimal numbers (4 points)
 
-Save the query results to a Pandas DataFrame (2 points)
+Part 3: Exploratory Analysis (55 points)
+To receive all points, your Jupyter notebook analysis file must have all of the following:
+Question 1: Which establishments have a hygiene score equal to 20? (8 points)
 
-Correctly plot a histogram with bins=12 for the last year of data using tobs as the column to count. (4 points)
+A query is correctly performed to find the establishments with a hygiene score of 20 (2 points)
 
-API SQLite Connection & Landing Page (10 points)
-To receive all points, your Flask application must
-Correctly generate the engine to the correct sqlite file (2 points)
+count_documents() is used to list the correct number of documents (answer: 41) (2 points)
 
-Use automap_base() and reflect the database schema (2 points)
+The first result is printed using pprint (2 points)
 
-Correctly save references to the tables in the sqlite file (measurement and station) (2 points)
+The results are converted to a Pandas DataFrame and displays the first 10 rows (2 points)
 
-Correctly create and binds the session between the python app and database (2 points)
+Question 2: Which establishments in London have a RatingValue greater than or equal to 4? (12 points)
 
-Display the available routes on the landing page (2 points)
+A query is correctly performed to find the establishments in London with a RatingValue greater than or equal to 4 (4 points)
 
-API Static Routes (15 points)
-To receive all points, your Flask application must include
-A precipitation route that:
+The query uses the $regex operator to locate the London establishments (2 points)
 
-Returns json with the date as the key and the value as the precipitation (3 points)
+count_documents() is used to list the correct number of documents (answer: 34) (2 points)
 
-Only returns the jsonified precipitation data for the last year in the database (3 points)
+The first result is printed using pprint (2 points)
 
-A stations route that:
+The results are converted to a Pandas DataFrame and displays the first 10 rows (2 points)
 
-Returns jsonified data of all of the stations in the database (3 points)
-A tobs route that:
+Question 3: What are the top 5 establishments with a RatingValue of '5', sorted by lowest hygiene score, nearest to the new restaurant added, "Penang Flavours"? (15 points)
 
-Returns jsonified data for the most active station (USC00519281) (3 points)
+A query is correctly performed to find the establishments within 0.01 degree of the "Penang Flavours" restaurant (4 points)
 
-Only returns the jsonified data for the last year of data (3 points)
+The query also limits the results to establishments with a RatingValue of 5 (2 points)
 
-API Dynamic Route (15 points)
-To receive all points, your Flask application must include
-A start route that:
+The query uses the sort() method in PyMongo to sort in ascending order on the hygiene score (2 points)
 
-Accepts the start date as a parameter from the URL (2 points)
+The query uses the limit() method in PyMongo to limit the results to 5 (2 points)
 
-Returns the min, max, and average temperatures calculated from the given start date to the end of the dataset (4 points)
+All five results are printed using pprint (3 points)
 
-A start/end route that:
+The results are converted to a Pandas DataFrame and displayed (2 points)
 
-Accepts the start and end dates as parameters from the URL (3 points)
+Question 4: How many establishments in each Local Authority area have a hygiene score of 0? Sort the results from highest to lowest, and print out the top ten local authority areas. (20 points)
 
-Returns the min, max, and average temperatures calculated from the given start date to the given end date (6 points)
+An aggregation pipeline is built to include a match query, group, and sort (3 points)
 
-Coding Conventions and Formatting (8 points)
-To receive all points, your code must
-Place imports at the top of the file, just after any module comments and docstrings, and before module globals and constants. (2 points)
+The match query matches documents with a hygiene score of 0 (2 points)
 
-Name functions and variables with lowercase characters, with words separated by underscores. (2 points)
+The group step of the pipeline is grouped on LocalAuthorityName and counts the number of documents (4 points)
 
-Follow DRY (Don't Repeat Yourself) principles, creating maintainable and reusable code. (2 points)
+The sort step of the pipeline sorts the count of the documents in descending order (2 points)
 
-Use concise logic and creative engineering where possible. (2 points)
+The aggregation pipeline is correctly sent to the aggregate() method (2 points)
+
+The results from the aggregation query is cast as a list and then saved to a variable (2 points)
+
+The first ten results are printed using pprint (3 points)
+
+The results are converted to a Pandas DataFrame and displays the first 10 rows (2 points)
 
 Deployment and Submission (6 points)
-To receive all points, you must
-Submit a link to a GitHub repository that’s cloned to your local machine and contains your files. (2 points)
+To receive all points, you must:
+Submit a link to a GitHub repository that’s cloned to your local machine and contains your files (2 points)
 
-Use the command line to add your files to the repository. (2 points)
+Use the command line to add your files to the repository (2 points)
 
-Include appropriate commit messages in your files. (2 points)
+Include appropriate commit messages in your files (2 points)
 
 Comments (4 points)
-To receive all points, your code must
-Be well commented with concise, relevant notes that other developers can understand. (4 points)
+To receive all points, your code must:
+Be well commented with concise, relevant notes that other developers can understand (4 points)
